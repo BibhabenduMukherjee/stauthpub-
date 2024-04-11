@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require("cors")
 const app = express();
 const datas = require('./data')
+const timeserise = require('./timeserise')
 // const User = require("./schema/user")
 app.use(cookieParser());
 
@@ -32,6 +33,7 @@ app.get("/" , (req,res)=>{
     res.send(" welcome from auth server for stock price prediction")
 })
 
+
 app.post("/getstockinfo" , (req,res)=>{
   const {code}  = req.body
   const info  = datas[code]
@@ -43,6 +45,24 @@ app.post("/getstocknews" , (req,res)=>{
   const info  = stockdata[code]
 
   res.status(200).json({info : info })
+})
+
+app.post("/getstocktimeserise" , (req,res)=>{
+  const {code}  = req.body
+  const t  = timeserise[code]
+  const tabledata = [];
+  for(let i=0; i <= 6; i++){
+   // let n = time
+    //let close = timeserise[code].Close[]
+    let open = timeserise[code].Open[i]
+    let high = timeserise[code].High[i]
+    let low = timeserise[code].Low[i]
+    const obj = {
+      open,high , low
+    }
+    tabledata.push(obj)
+  }
+  res.status(200).json({info : t , tabledata })
 })
 
 let PORT = process.env.PORT || 3002
