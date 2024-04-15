@@ -84,7 +84,7 @@ var output =
     <p>StockTrade</p>
 `;
 
-app.post("/sendemail", (req,res) => {
+app.post("/sendemail", async(req,res) => {
   const {email} = req.body;
   var mailOptions = {
     from: "stocktradeappbcet@gmail.com",
@@ -93,12 +93,7 @@ app.post("/sendemail", (req,res) => {
     html: output, // plain text body
   };
 
-  transporter.sendMail(mailOptions, function (err, info) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log(info);
-  });
+  await transporter.sendMail(mailOptions)
   res.send("ok")
 
 })
