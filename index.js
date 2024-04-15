@@ -10,6 +10,64 @@ const timeserise = require('./timeserise')
 // const User = require("./schema/user")
 app.use(cookieParser());
 
+
+const generateEmailTemplate = (name,modelurl) => {
+  return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Model Training Success</title>
+          <style>
+              /* Add your custom styles here */
+              body {
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  border: 1px solid #ccc;
+                  border-radius: 5px;
+                  background-color: #f9f9f9;
+              }
+              h1 {
+                  color: #333;
+              }
+              p {
+                  margin-bottom: 15px;
+              }
+              strong {
+                  font-weight: bold;
+              }
+              footer {
+                  margin-top: 30px;
+                  text-align: center;
+                  font-size: 12px;
+                  color: #666;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <h1>Model Training Success!</h1>
+              <p>Dear ${name},</p>
+              <p>We are pleased to inform you that your model has been successfully trained. Thank you for choosing StockTrade for your model training needs.</p>
+              <p>you can check model prediction in <a href=${modelurl}>here</a></p>
+              <p><strong>Please note:</strong> This is an automatically generated email. Kindly do not reply.</p>
+              <footer>
+                  <p>Regards,</p>
+                  <p>StockTrade</p>
+              </footer>
+          </div>
+      </body>
+      </html>
+  `;
+};
+
+
 // Use express-session middleware for session management
 app.use(session({
   secret: 'your-secret-key',
@@ -72,24 +130,16 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASS,
   },
 });
-var output =
-`
-    
-    <p>Successfully  Trained !! Thanks for your first model training </p>
-   
-    
-    <p><strong>This is an automatically generated mail. Please do not reply back.</strong></p>
-    
-    <p>Regards,</p>
-    <p>StockTrade</p>
-`;
+
 
 app.post("/sendemail", async(req,res) => {
-  const {email} = req.body;
+  console.log(req.body);
+  const {email,user_name,modelurl} = req.body;
+  const output = generateEmailTemplate(user_name,modelurl)
   var mailOptions = {
     from: "stocktradeappbcet@gmail.com",
     to: email,
-    subject: "Email Verification", // Subject line
+    subject: "Model Information", // Subject line
     html: output, // plain text body
   };
 
